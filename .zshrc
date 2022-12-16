@@ -71,7 +71,7 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 ZSH_PYENV_QUIET=true
-plugins=(git pyenv emacs golang jenv nvm tmux gcloud)
+plugins=(git pyenv emacs golang jenv nvm tmux gcloud kubectl kubectx)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -115,15 +115,12 @@ bindkey \^U backward-kill-line
     autoload -Uz compinit
     compinit
   fi
-
-
 # # Emacsclient
 # alias e='emacsclient --alternate-editor ""'
 # alias ec='emacsclient -c --alternate-editor ""'
 # alias et='emacsclient -t --alternate-editor ""'
-# alias ekill='emacsclient -e "(kill-emacs)"'
+alias ekill='emacsclient -e "(kill-emacs)"'
 
-. ~/cc-dotfiles/caas.sh
 export KUBECONFIG="/Users/matang/.kube/ccloud-config/devel/kubeconfig"
 
 alias ecr_login='gimme-aws-creds --profile devprodprod && aws ecr get-login-password --region us-west-2 --profile devprod-prod | docker login --username AWS --password-stdin 519856050701.dkr.ecr.us-west-2.amazonaws.com'
@@ -136,12 +133,11 @@ export AWS_PROFILE=devprod-prod
 export VAULT_ADDR=https://vault.cireops.gcp.internal.confluent.cloud
 alias vault_login="vault login -method=oidc -path=okta"
 
-export GOENV_GOPATH_PREFIX="$HOME/git/go"
 export GOENV_ROOT="$HOME/.goenv"
 export PATH="$GOENV_ROOT/shims:$PATH"
 eval "$(goenv init -)"
 # export PATH="$GOROOT/bin:$PATH:$GOPATH/bin"
-# export GOPRIVATE="github.com/confluentinc/*"
+export GOPRIVATE="github.com/confluentinc/*"
 
 # godevenv () {
 # 	# export GOENV_ROOT="$HOME/.goenv"
@@ -156,3 +152,9 @@ work () {
 
 alias ekill='emacsclient -e "(kill-emacs)"'
 bindkey '^[l' down-case-word
+
+export CC_DOTFILES_BETA=true
+. ~/git/confluentinc/cc-dotfiles/caas.sh
+export KUBECTL_CCLOUD_CONFIG_POST_HOOK='kubectl-patch-config inject-oidc-helper'
+
+RPS1='$(kubectx_prompt_info)'
